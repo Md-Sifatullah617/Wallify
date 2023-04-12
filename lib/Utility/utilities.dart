@@ -24,3 +24,30 @@ void errorToastMessage(msg){
         fontSize: 16.0
     );
 }
+
+
+
+// class Loading extends StatelessWidget {
+//   const Loading({
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//       onTap: () {
+//         loadMore();
+//       },
+//       child: Container(
+//         height: 60,
+//         width: double.infinity,
+//         color: Colors.black,
+//         child: const Center(
+//             child: Text(
+//           "Load More",
+//           style: TextStyle(fontSize: 20, color: Colors.white),
+//         )),
+//       ),
+//     );
+//   }
+// }

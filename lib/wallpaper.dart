@@ -61,22 +61,6 @@ class _WallpaperState extends State<Wallpaper> {
                   ),
             ),
           ),
-
-            // InkWell(
-            //   onTap: () {
-            //     loadMore();
-            //   },
-            //   child: Container(
-            //     height: 60,
-            //     width: double.infinity,
-            //     color: Colors.black,
-            //     child: const Center(
-            //         child: Text(
-            //       "Load More",
-            //       style: TextStyle(fontSize: 20, color: Colors.white),
-            //     )),
-            //   ),
-            // )
         ],
       ),
     );

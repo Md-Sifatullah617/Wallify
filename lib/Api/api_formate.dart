@@ -19,3 +19,18 @@ Future<List> getCuratedPhotos(pageNo) async {
     return [];
   }
 }
+
+Future<List> unsplashApi(pageNo,perPage) async {
+  var response = await http.get(
+      Uri.parse('https://api.unsplash.com/photos/?client_id=wJuV3s36uGfpOWCEvy7ZD6nqbWbxDCN5lkwztmRlsd4&page=$pageNo&per_page=$perPage')
+      );
+  var resultCode = response.statusCode;
+  var resultBody = json.decode(response.body);
+  if (resultCode == 200) {
+    successToastMessage("Picture Loading Success");
+    return resultBody;
+  } else {
+    errorToastMessage("Picture Loading Failed ! Try Again.");
+    return [];
+  }
+}

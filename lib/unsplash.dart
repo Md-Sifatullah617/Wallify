@@ -16,9 +16,10 @@ class _UnsplashState extends State<Unsplash> {
   List images = [];
   bool loading = false;
   int pageNo = 1;
+  int perPage = 30;
   loadMore() async {
     pageNo++;
-    var data = await getCuratedPhotos(pageNo);
+    var data = await unsplashApi(pageNo, perPage);
     setState(() {
       images.addAll(data);
     });
@@ -26,7 +27,7 @@ class _UnsplashState extends State<Unsplash> {
 
   callData() async {
     loading = true;
-    var data = await getCuratedPhotos(pageNo);
+    var data = await unsplashApi(pageNo, perPage);
     setState(() {
       images = data;
       loading = false;
@@ -56,12 +57,12 @@ class _UnsplashState extends State<Unsplash> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ImageDetails(
-                          imageURL: images[index]["src"]["tiny"])));
+                          imageURL: images[index]["urls"]["small"])));
             },
             child: Container(
               color: Colors.white,
               child: Image.network(
-                images[index]["src"]["tiny"],
+                images[index]["urls"]["small"],
                 fit: BoxFit.cover,
               ),
             ),

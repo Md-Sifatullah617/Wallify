@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wallify/Utility/utilities.dart';
 
 import 'Api/api_formate.dart';
 import 'full_screen.dart';
@@ -41,31 +42,36 @@ class _PexelsState extends State<Pexels> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 2,
-          mainAxisSpacing: 2,
-          childAspectRatio: 2 / 3,
-        ),
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ImageDetails(
-                          imageURL: images[index]["src"]["tiny"])));
-            },
-            child: Container(
-              color: Colors.white,
-              child: Image.network(
-                images[index]["src"]["tiny"],
-                fit: BoxFit.cover,
-              ),
+    return Stack(
+      children: [
+        GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 2,
+              mainAxisSpacing: 2,
+              childAspectRatio: 2 / 3,
             ),
-          );
-        });
+            itemCount: images.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ImageDetails(
+                              imageURL: images[index]["src"]["tiny"])));
+                },
+                child: Container(
+                  color: Colors.white,
+                  child: Image.network(
+                    images[index]["src"]["tiny"],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            }),
+      ],
+    );
   }
+  
 }
