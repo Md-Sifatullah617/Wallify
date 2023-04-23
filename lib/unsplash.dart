@@ -42,31 +42,45 @@ class _UnsplashState extends State<Unsplash> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 2,
-          mainAxisSpacing: 2,
-          childAspectRatio: 2 / 3,
-        ),
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ImageDetails(
-                          imageURL: images[index]["urls"]["raw"])));
-            },
-            child: Container(
-              color: Colors.white,
-              child: Image.network(
-                images[index]["urls"]["small"],
-                fit: BoxFit.cover,
-              ),
+    return Stack(
+      children: [
+        GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 2,
+              mainAxisSpacing: 2,
+              childAspectRatio: 2 / 3,
             ),
-          );
-        });
+            itemCount: images.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ImageDetails(
+                              imageURL: images[index]["urls"]["raw"])));
+                },
+                child: Container(
+                  color: Colors.white,
+                  child: Image.network(
+                    images[index]["urls"]["small"],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            }),
+        Positioned(
+          right: 10,
+          bottom: 25,
+          child: FloatingActionButton(
+            onPressed: () {
+              loadMore();
+            },
+            child: const Icon(Icons.refresh),
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -69,8 +69,17 @@ class _PexelsState extends State<Pexels> {
                 ),
               );
             }),
+        Positioned(
+          right: 10,
+          bottom: 25,
+          child: FloatingActionButton(
+            onPressed: () {
+              loadMore();
+            },
+            child: const Icon(Icons.refresh),
+          ),
+        )
       ],
     );
   }
-  
 }
