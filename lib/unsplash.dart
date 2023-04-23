@@ -57,7 +57,7 @@ class _UnsplashState extends State<Unsplash> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ImageDetails(
-                          imageURL: images[index]["urls"]["small"])));
+                          imageURL: images[index]["urls"]["raw"])));
             },
             child: Container(
               color: Colors.white,
