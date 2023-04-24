@@ -58,7 +58,7 @@ class _PexelsState extends State<Pexels> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ImageDetails(
-                              imageURL: images[index]["src"]["large2x"])));
+                              imageURL: images[index]["src"]["large2x"], photographer: images[index]["photographer"],)));
                 },
                 child: Container(
                   color: Colors.white,

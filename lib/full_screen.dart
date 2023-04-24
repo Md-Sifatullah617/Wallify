@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 
+import 'Utility/utilities.dart';
+
 class ImageDetails extends StatefulWidget {
-  final String imageURL;
-  const ImageDetails({super.key, required this.imageURL});
+  final String imageURL, photographer;
+  final int? tlike;
+
+  const ImageDetails(
+      {super.key,
+      required this.imageURL,
+      required this.photographer,
+      this.tlike});
 
   @override
   State<ImageDetails> createState() => _ImageDetailsState();
@@ -21,7 +29,7 @@ class _ImageDetailsState extends State<ImageDetails> {
             height: 10,
           ),
           AspectRatio(
-            aspectRatio: 10/9,
+            aspectRatio: 10 / 9,
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(25)),
               child: Image.network(
@@ -29,6 +37,29 @@ class _ImageDetailsState extends State<ImageDetails> {
                 fit: BoxFit.cover,
               ),
             ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Column(
+            children: [
+              Text(
+                "Photographer",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const Divider(),
+              Text(
+                widget.photographer,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text("Total Like: "),
+              Text(widget.tlike?.toString()?? "not Liked yet")
+            ],
           ),
           InkWell(
             onTap: () {
@@ -122,21 +153,5 @@ class _ImageDetailsState extends State<ImageDetails> {
             ),
           );
         });
-  }
-}
-
-class CustomDivider extends StatelessWidget {
-  const CustomDivider({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.7,
-        child: const Divider(
-          color: Colors.grey,
-          thickness: 1,
-        ));
   }
 }
