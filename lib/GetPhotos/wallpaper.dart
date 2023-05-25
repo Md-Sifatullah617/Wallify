@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wallify/pexels.dart';
-import 'package:wallify/unsplash.dart';
+import 'package:wallify/GetPhotos/pexels.dart';
+import 'package:wallify/GetPhotos/unsplash.dart';
 
 class Wallpaper extends StatefulWidget {
   const Wallpaper({super.key});

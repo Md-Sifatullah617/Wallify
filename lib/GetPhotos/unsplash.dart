@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-
-import 'Api/api_formate.dart';
+import 'package:wallify/Api/api_formate.dart';
+import 'package:wallify/Utility/shimmer_effect.dart';
 import 'full_screen.dart';
 
-class Pexels extends StatefulWidget {
-  const Pexels({
+class Unsplash extends StatefulWidget {
+  const Unsplash({
     super.key,
   });
 
   @override
-  State<Pexels> createState() => _PexelsState();
+  State<Unsplash> createState() => _UnsplashState();
 }
 
-class _PexelsState extends State<Pexels> {
+class _UnsplashState extends State<Unsplash> {
   List images = [];
   bool loading = false;
   int pageNo = 1;
+  int perPage = 30;
   loadMore() async {
     pageNo++;
-    var data = await getCuratedPhotos(pageNo);
+    var data = await unsplashApi(pageNo, perPage);
     setState(() {
       images.addAll(data);
     });
@@ -26,7 +27,7 @@ class _PexelsState extends State<Pexels> {
 
   callData() async {
     loading = true;
-    var data = await getCuratedPhotos(pageNo);
+    var data = await unsplashApi(pageNo, perPage);
     setState(() {
       images = data;
       loading = false;
@@ -43,6 +44,9 @@ class _PexelsState extends State<Pexels> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        loading
+            ? const ShimmerEffect()
+            :
         GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
@@ -58,12 +62,12 @@ class _PexelsState extends State<Pexels> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ImageDetails(
-                              imageURL: images[index]["src"]["large2x"], photographer: images[index]["photographer"],)));
+                              imageURL: images[index]["urls"]["full"], photographer: images[index]["user"]["name"], tlike: images[index]["likes"],)));
                 },
                 child: Container(
                   color: Colors.white,
                   child: Image.network(
-                    images[index]["src"]["tiny"],
+                    images[index]["urls"]["small"],
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -78,7 +82,7 @@ class _PexelsState extends State<Pexels> {
             },
             child: const Icon(Icons.refresh),
           ),
-        )
+        ),
       ],
     );
   }

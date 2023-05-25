@@ -12,7 +12,6 @@ Future<List> getCuratedPhotos(pageNo) async {
   var resultCode = response.statusCode;
   var resultBody = json.decode(response.body);
   if (resultCode == 200) {
-    successToastMessage("Picture Loading Success");
     return resultBody["photos"];
   } else {
     errorToastMessage("Picture Loading Failed ! Try Again.");
@@ -27,7 +26,6 @@ Future<List> unsplashApi(pageNo,perPage) async {
   var resultCode = response.statusCode;
   var resultBody = json.decode(response.body);
   if (resultCode == 200) {
-    successToastMessage("Picture Loading Success");
     return resultBody;
   } else {
     errorToastMessage("Picture Loading Failed ! Try Again.");

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wallify/wallpaper.dart';
+import 'package:wallify/splash_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(brightness: Brightness.dark),
-        home: const Wallpaper(),
+        home: const SplashScreen(),
     );
   }
 }

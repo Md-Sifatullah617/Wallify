@@ -39,6 +39,9 @@ dependencies:
   fluttertoast: ^8.2.1
   flutter_cache_manager: ^3.3.0
   flutter_wallpaper_manager: ^0.0.3
+  flutter_bloc: ^8.1.2
+  animated_text_kit: ^4.2.2
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +81,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Pacifico
+      fonts:
+        - asset: assets\fonts\Pacifico-Regular.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

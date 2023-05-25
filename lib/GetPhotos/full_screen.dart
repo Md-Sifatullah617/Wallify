@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
-
-import 'Utility/utilities.dart';
+import 'package:wallify/Utility/utilities.dart';
 
 class ImageDetails extends StatefulWidget {
   final String imageURL, photographer;
@@ -28,13 +27,16 @@ class _ImageDetailsState extends State<ImageDetails> {
           const SizedBox(
             height: 10,
           ),
-          AspectRatio(
-            aspectRatio: 10 / 9,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(25)),
-              child: Image.network(
-                widget.imageURL,
-                fit: BoxFit.cover,
+          Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: AspectRatio(
+              aspectRatio: 10 / 9,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(25)),
+                child: Image.network(
+                  widget.imageURL,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
