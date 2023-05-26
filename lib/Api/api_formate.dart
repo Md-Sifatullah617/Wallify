@@ -19,10 +19,9 @@ Future<List> getCuratedPhotos(pageNo) async {
   }
 }
 
-Future<List> unsplashApi(pageNo,perPage) async {
-  var response = await http.get(
-      Uri.parse('https://api.unsplash.com/photos/?client_id=wJuV3s36uGfpOWCEvy7ZD6nqbWbxDCN5lkwztmRlsd4&page=$pageNo&per_page=$perPage')
-      );
+Future<List> unsplashApi(pageNo, perPage) async {
+  var response = await http.get(Uri.parse(
+      'https://api.unsplash.com/photos/?client_id=wJuV3s36uGfpOWCEvy7ZD6nqbWbxDCN5lkwztmRlsd4&page=$pageNo&per_page=$perPage'));
   var resultCode = response.statusCode;
   var resultBody = json.decode(response.body);
   if (resultCode == 200) {
