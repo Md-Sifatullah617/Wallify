@@ -60,7 +60,7 @@ class _ImageDetailsState extends State<ImageDetails> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const Text("Total Like: "),
-              Text(widget.tlike?.toString()?? "not Liked yet")
+              Text(widget.tlike?.toString() ?? "0")
             ],
           ),
           InkWell(
@@ -88,70 +88,71 @@ class _ImageDetailsState extends State<ImageDetails> {
         backgroundColor: Colors.transparent,
         context: context,
         builder: (BuildContext context) {
-          return FractionallySizedBox(
-            widthFactor: 0.8,
-            child: Container(
-              height: 150,
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      var file = await DefaultCacheManager()
-                          .getSingleFile(widget.imageURL);
-                      await WallpaperManager.setWallpaperFromFile(
-                          file.path, WallpaperManager.HOME_SCREEN);
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'Set as HomeScreen',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall!
-                          .copyWith(color: Colors.black),
-                    ),
+          return Container(
+            height: 150,
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25)),
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.white, Colors.grey])),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () async {
+                    var file = await DefaultCacheManager()
+                        .getSingleFile(widget.imageURL);
+                    await WallpaperManager.setWallpaperFromFile(
+                        file.path, WallpaperManager.HOME_SCREEN);
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Set as HomeScreen',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(color: Colors.black),
                   ),
-                  const CustomDivider(),
-                  InkWell(
-                    onTap: () async {
-                      var file = await DefaultCacheManager()
-                          .getSingleFile(widget.imageURL);
-                      await WallpaperManager.setWallpaperFromFile(
-                          file.path, WallpaperManager.LOCK_SCREEN);
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'Set as LockScreen',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall!
-                          .copyWith(color: Colors.black),
-                    ),
+                ),
+                const CustomDivider(),
+                InkWell(
+                  onTap: () async {
+                    var file = await DefaultCacheManager()
+                        .getSingleFile(widget.imageURL);
+                    await WallpaperManager.setWallpaperFromFile(
+                        file.path, WallpaperManager.LOCK_SCREEN);
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Set as LockScreen',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(color: Colors.black),
                   ),
-                  const CustomDivider(),
-                  InkWell(
-                    onTap: () async {
-                      var file = await DefaultCacheManager()
-                          .getSingleFile(widget.imageURL);
-                      await WallpaperManager.setWallpaperFromFile(
-                          file.path, WallpaperManager.BOTH_SCREEN);
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'Both',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall!
-                          .copyWith(color: Colors.black),
-                    ),
-                  )
-                ],
-              ),
+                ),
+                const CustomDivider(),
+                InkWell(
+                  onTap: () async {
+                    var file = await DefaultCacheManager()
+                        .getSingleFile(widget.imageURL);
+                    await WallpaperManager.setWallpaperFromFile(
+                        file.path, WallpaperManager.BOTH_SCREEN);
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Both',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(color: Colors.black),
+                  ),
+                )
+              ],
             ),
           );
         });

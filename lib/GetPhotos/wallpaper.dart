@@ -22,10 +22,11 @@ class _WallpaperState extends State<Wallpaper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-            widgetsOption.elementAt(selectedItem),
+          widgetsOption.elementAt(selectedItem),
           Positioned(
             bottom: 25,
             right: MediaQuery.of(context).size.width / 4,
@@ -40,25 +41,25 @@ class _WallpaperState extends State<Wallpaper> {
                         color: Color.fromARGB(255, 92, 92, 92), blurRadius: 10)
                   ]),
               child: BottomNavigationBar(
-                  selectedItemColor: Colors.black,
-                  selectedLabelStyle: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 19),
-                  unselectedItemColor: Colors.blueGrey,
-                  unselectedLabelStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  items: const [
-                    BottomNavigationBarItem(
-                        icon: SizedBox.shrink(), label: "Pexels"),
-                    BottomNavigationBarItem(
-                        icon: SizedBox.shrink(), label: "Unsplash")
-                  ],
-                  currentIndex: selectedItem,
-                  onTap: onItemTapped,                  
-                  ),
+                selectedItemColor: Colors.black,
+                selectedLabelStyle:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                unselectedItemColor: Colors.blueGrey,
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                items: const [
+                  BottomNavigationBarItem(
+                      icon: SizedBox.shrink(), label: "Pexels"),
+                  BottomNavigationBarItem(
+                      icon: SizedBox.shrink(), label: "Unsplash")
+                ],
+                currentIndex: selectedItem,
+                onTap: onItemTapped,
+              ),
             ),
           ),
         ],
