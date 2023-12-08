@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wallify/Utility/shimmer_effect.dart';
 import 'package:wallify/controller/main_controller.dart';
+import 'package:wallify/vvew/search_setting.dart';
 
 class DashBoard extends StatelessWidget {
   DashBoard({super.key});
@@ -18,7 +20,7 @@ class DashBoard extends StatelessWidget {
               },
               child: const Icon(Icons.menu)),
         ),
-        drawer: DrawerSection(),
+        drawer: const DrawerSection(),
         body: GetBuilder<MainController>(
           init: MainController(),
           builder: (controller) => ListView(
@@ -40,20 +42,88 @@ class DashBoard extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: controller.searchController,
+                        decoration: const InputDecoration(
                           hintText: "Search Images",
                           border: InputBorder.none,
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        controller.searchHistory
-                            .add(controller.searchController.value.text.trim());
+                    IconButton(
+                      onPressed: () {
+                        controller.addToSearchHistory(
+                            controller.searchController.text);
+                        controller.searchPhotos(
+                            controller.searchController.text, 1);
+                        //opens a bottom sheet to show search results
+                        Get.bottomSheet(
+                          Container(
+                            height: Get.height,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Get.width * 0.02,
+                                vertical: Get.height * 0.02),
+                            color: Colors.white,
+                            child: Column(children: [
+                              //back button search field and setting icon
+                              AppBar(
+                                leading: InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                  },
+                                  child: const Icon(Icons.arrow_back),
+                                ),
+                                title: TextFormField(
+                                  controller: controller.searchController,
+                                  decoration: const InputDecoration(
+                                    hintText: "Search Images",
+                                    contentPadding: EdgeInsets.zero,
+                                    border: UnderlineInputBorder(),
+                                  ),
+                                ),
+                                actions: [
+                                  InkWell(
+                                    onTap: () {
+                                      Get.to(() => const SearchSettings());
+                                    },
+                                    child: const Icon(Icons.settings),
+                                  ),
+                                ],
+                              ),
+                              Expanded(
+                                child: controller.isLoading.value
+                                    ? const ShimmerEffect()
+                                    : GridView.builder(
+                                        padding: const EdgeInsets.only(top: 0),
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          crossAxisSpacing: 2,
+                                          mainAxisSpacing: 2,
+                                          childAspectRatio: 2 / 3,
+                                        ),
+                                        itemCount: controller.photoList.length,
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              color: Colors.white,
+                                              child: Image.network(
+                                                controller.photoList[index]
+                                                    ["src"]["tiny"],
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                              ),
+                            ]),
+                          ),
+                          isScrollControlled: true,
+                        );
                       },
-                      child: const Icon(Icons.search),
+                      icon: const Icon(Icons.search),
                     ),
                   ],
                 ),
@@ -69,23 +139,21 @@ class DashBoard extends StatelessWidget {
               SizedBox(
                 height: Get.height * 0.02,
               ),
-              Container(
+              SizedBox(
                 height: Get.height * 0.4,
                 child: ListView.builder(
                   itemCount: controller.searchHistory.length,
                   itemBuilder: (context, index) => ListTile(
                     leading: const Icon(Icons.history),
                     title: Text(
-                      controller.searchHistory[index].toString(),
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                      ),
+                      controller.searchHistory[index],
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     trailing: InkWell(
                       onTap: () {
                         controller.searchHistory.removeAt(index);
                       },
-                      child: const Icon(Icons.delete),
+                      child: const Icon(Icons.cancel_presentation),
                     ),
                   ),
                 ),
@@ -94,6 +162,10 @@ class DashBoard extends StatelessWidget {
           ),
         ));
   }
+}
+
+class SearchSetting {
+  const SearchSetting();
 }
 
 class DrawerSection extends StatelessWidget {
