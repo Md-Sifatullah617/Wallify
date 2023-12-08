@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:wallify/Utility/secured_data.dart';
 import 'package:wallify/Utility/utilities.dart';
 import 'package:http/http.dart' as http;
@@ -124,6 +127,40 @@ class MainController extends GetxController {
       photoList.value = [];
       isLoading.value = false;
       update();
+    }
+  }
+
+  Future<void> downloadImage(String url, String filename) async {
+    Dio dio = Dio();
+
+    try {
+      var dir = await getExternalStorageDirectory();
+
+      // Create a new directory with your app name
+      String newPath = '';
+      List<String> folders = dir!.path.split('/');
+      for (int x = 1; x < folders.length; x++) {
+        String folder = folders[x];
+        if (folder != 'Android') {
+          newPath += '/$folder';
+        } else {
+          break;
+        }
+      }
+      newPath = '$newPath/Wallify'; // your app name
+      dir = Directory(newPath);
+      // Check if the directory exists
+      bool exists = await dir.exists();
+      if (!exists) {
+        dir.createSync(recursive: true);
+      }
+
+      await dio.download(url, "${dir.path}/$filename");
+      successToastMessage("Image downloaded successfully");
+      print("Image downloaded successfully");
+    } catch (e) {
+      errorToastMessage("Image downloading failed");
+      print("Error downloading image: $e");
     }
   }
 }

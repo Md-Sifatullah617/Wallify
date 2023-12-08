@@ -76,7 +76,11 @@ class _ImageDetailsState extends State<ImageDetails> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.downloadImage(
+                            widget.imageDetails["src"]["original"],
+                            widget.imageDetails["id"].toString());
+                      },
                       icon: const Icon(Icons.download),
                     ),
                     IconButton(
