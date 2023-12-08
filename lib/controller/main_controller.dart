@@ -8,8 +8,10 @@ import 'package:http/http.dart' as http;
 class MainController extends GetxController {
   var searchController = TextEditingController();
   var isLoading = false.obs;
+  var pageNo = 1.obs;
   var searchHistory = [].obs;
   var photoList = [].obs;
+  var downloadedImageList = [].obs;
   var typeList = [
     "Any Type",
     "Face",
@@ -43,6 +45,9 @@ class MainController extends GetxController {
   var isLicenseSelected = false.obs;
   var selectedLicense = "".obs;
 
+  late ScrollController scrollController = ScrollController();
+  double scrollPosition = 0.0;
+
   @override
   void onInit() {
     SecureData.readSecureData(key: "searchHistory").then((value) {
@@ -51,6 +56,14 @@ class MainController extends GetxController {
         update();
       } else {
         print("value is null");
+      }
+    });
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        scrollPosition = scrollController.position.pixels;
+        pageNo.value++;
+        searchPhotos(searchController.text, pageNo.value);
       }
     });
     // Set the selectedType to the first item in the typeList
@@ -89,8 +102,15 @@ class MainController extends GetxController {
       var resultCode = response.statusCode;
       var resultBody = json.decode(response.body);
       if (resultCode == 200) {
-        photoList.value = resultBody;
+        photoList.addAll(resultBody["photos"]);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          // Jump to the saved scroll position
+          if (scrollController.hasClients) {
+            scrollController.jumpTo(scrollPosition);
+          }
+        });
         isLoading.value = false;
+        print("PhotoList : $photoList");
         update();
       } else {
         errorToastMessage("Picture Loading Failed ! Try Again.");
@@ -100,6 +120,7 @@ class MainController extends GetxController {
       }
     } catch (e) {
       errorToastMessage("Picture Loading Failed ! Try Again.");
+      print("Error : $e");
       photoList.value = [];
       isLoading.value = false;
       update();

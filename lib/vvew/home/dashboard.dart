@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wallify/GetPhotos/full_screen.dart';
 import 'package:wallify/Utility/shimmer_effect.dart';
 import 'package:wallify/controller/main_controller.dart';
 import 'package:wallify/vvew/search_setting.dart';
@@ -92,31 +93,41 @@ class DashBoard extends StatelessWidget {
                                 ],
                               ),
                               Expanded(
-                                child: controller.isLoading.value
-                                    ? const ShimmerEffect()
-                                    : GridView.builder(
-                                        padding: const EdgeInsets.only(top: 0),
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 2,
-                                          mainAxisSpacing: 2,
-                                          childAspectRatio: 2 / 3,
-                                        ),
-                                        itemCount: controller.photoList.length,
-                                        itemBuilder: (context, index) {
-                                          return InkWell(
-                                            onTap: () {},
-                                            child: Container(
-                                              color: Colors.white,
-                                              child: Image.network(
-                                                controller.photoList[index]
-                                                    ["src"]["tiny"],
-                                                fit: BoxFit.cover,
+                                child: Obx(
+                                  () => controller.isLoading.value
+                                      ? const ShimmerEffect()
+                                      : GridView.builder(
+                                          controller:
+                                              controller.scrollController,
+                                          padding:
+                                              const EdgeInsets.only(top: 0),
+                                          gridDelegate:
+                                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3,
+                                            crossAxisSpacing: 2,
+                                            mainAxisSpacing: 2,
+                                            childAspectRatio: 2 / 3,
+                                          ),
+                                          itemCount:
+                                              controller.photoList.length,
+                                          itemBuilder: (context, index) {
+                                            return InkWell(
+                                              onTap: () {
+                                                Get.to(() => ImageDetails(
+                                                    imageDetails: controller
+                                                        .photoList[index]));
+                                              },
+                                              child: Container(
+                                                color: Colors.white,
+                                                child: Image.network(
+                                                  controller.photoList[index]
+                                                      ["src"]["tiny"],
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        }),
+                                            );
+                                          }),
+                                ),
                               ),
                             ]),
                           ),
@@ -144,6 +155,10 @@ class DashBoard extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: controller.searchHistory.length,
                   itemBuilder: (context, index) => ListTile(
+                    onTap: () {
+                      controller.searchController.text =
+                          controller.searchHistory[index];
+                    },
                     leading: const Icon(Icons.history),
                     title: Text(
                       controller.searchHistory[index],
