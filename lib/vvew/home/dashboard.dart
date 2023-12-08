@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallify/GetPhotos/full_screen.dart';
@@ -117,13 +118,15 @@ class DashBoard extends StatelessWidget {
                                                     imageDetails: controller
                                                         .photoList[index]));
                                               },
-                                              child: Container(
-                                                color: Colors.white,
-                                                child: Image.network(
-                                                  controller.photoList[index]
-                                                      ["src"]["tiny"],
-                                                  fit: BoxFit.cover,
-                                                ),
+                                              child: CachedNetworkImage(
+                                                imageUrl: controller
+                                                    .photoList[index]["src"]
+                                                        ["tiny"]
+                                                    .toString(),
+                                                fit: BoxFit.cover,
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
                                               ),
                                             );
                                           }),

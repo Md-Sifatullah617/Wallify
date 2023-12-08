@@ -1,6 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wallify/Utility/shimmer_effect.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:wallify/controller/main_controller.dart';
 import 'package:wallify/vvew/home/dashboard.dart';
 
@@ -54,9 +55,11 @@ class _ImageDetailsState extends State<ImageDetails> {
                   aspectRatio: 10 / 9,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(25)),
-                    child: Image.network(
-                      widget.imageDetails["src"]["original"],
+                    child: CachedNetworkImage(
+                      imageUrl: widget.imageDetails["src"]["original"],
                       fit: BoxFit.cover,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                   ),
                 ),
@@ -76,10 +79,19 @@ class _ImageDetailsState extends State<ImageDetails> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      onPressed: () {
-                        controller.downloadImage(
-                            widget.imageDetails["src"]["original"],
-                            widget.imageDetails["id"].toString());
+                      onPressed: () async {
+                        var status = await Permission.storage.status;
+                        if (!status.isGranted) {
+                          status = await Permission.storage.request();
+                        }
+                        if (status.isGranted) {
+                          controller.downloadImage(
+                              widget.imageDetails["src"]["original"],
+                              widget.imageDetails["id"].toString());
+                        } else {
+                          // Handle the case when the user denies the permission
+                          print("Storage permission not granted");
+                        }
                       },
                       icon: const Icon(Icons.download),
                     ),
@@ -129,40 +141,33 @@ class _ImageDetailsState extends State<ImageDetails> {
               SizedBox(
                 height: Get.height * 0.05,
               ),
-              Obx(
-                () => controller.isLoading.value
-                    ? const ShimmerEffect()
-                    : GridView.builder(
-                        // controller: controller.scrollController,
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.only(top: 0),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 2,
-                          mainAxisSpacing: 2,
-                          childAspectRatio: 2 / 3,
-                        ),
-                        itemCount:
-                            controller.photoList.length, // Update this line
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              // Get.to(() => ImageDetails(
-                              //     imageDetails: controller.photoList[index]));
-                            },
-                            child: Image.network(
-                              controller.photoList[index]['src']
-                                  ['original'], // Update this line
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Text('Error loading image');
-                              },
-                            ),
-                          );
-                        },
-                      ),
+              GridView.builder(
+                // controller: controller.scrollController,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(top: 0),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 2,
+                  childAspectRatio: 2 / 3,
+                ),
+                itemCount: controller.photoList.length, // Update this line
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      // Get.to(() => ImageDetails(
+                      //     imageDetails: controller.photoList[index]));
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl: controller.photoList[index]["src"]
+                          ["tiny"], // Update this line
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
+                  );
+                },
               ),
             ],
           ),
