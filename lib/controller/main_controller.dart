@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:wallify/Utility/secured_data.dart';
 import 'package:wallify/Utility/utilities.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 
 class MainController extends GetxController {
   var searchController = TextEditingController();
@@ -160,6 +162,40 @@ class MainController extends GetxController {
     } catch (e) {
       errorToastMessage("Image downloading failed");
       print("Error downloading image: $e");
+    }
+  }
+
+  Future<void> shareImage(String url, String filename) async {
+    var dir = await getApplicationDocumentsDirectory();
+    String newPath = '${dir.path}/Wallify'; // your app name
+    String filePath = path.join(
+        newPath, '$filename.jpg'); // assuming the image is in jpg format
+
+    File file = File(filePath);
+    if (await file.exists()) {
+      // If the file exists, share it
+      await Share.shareFiles([filePath]);
+    } else {
+      // If the file doesn't exist, download it first
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        status = await Permission.storage.request();
+      }
+      if (status.isGranted) {
+        await downloadImage(url, filename);
+        // Add a delay before checking if the file exists
+        await Future.delayed(Duration(seconds: 2));
+        // After downloading the image, check again if the file exists
+        if (await file.exists()) {
+          // If the file now exists, share it
+          await Share.shareFiles([filePath]);
+        } else {
+          print("File does not exist after download");
+        }
+      } else {
+        // Handle the case when the user denies the permission
+        print("Storage permission not granted");
+      }
     }
   }
 }

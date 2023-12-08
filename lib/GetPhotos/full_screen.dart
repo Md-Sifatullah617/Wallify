@@ -96,34 +96,31 @@ class _ImageDetailsState extends State<ImageDetails> {
                       icon: const Icon(Icons.download),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.shareImage(
+                            widget.imageDetails["src"]["original"],
+                            widget.imageDetails["id"].toString());
+                      },
                       icon: const Icon(Icons.share),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        PopupMenuButton(
-                            itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    value: 1,
-                                    child: ListTile(
-                                      onTap: () {},
-                                      leading: const Icon(Icons.web),
-                                      title: const Text("Search in web"),
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 2,
-                                    child: ListTile(
-                                      onTap: () {},
-                                      leading: const Icon(Icons.wallpaper),
-                                      title: const Text("Set as wallpaper"),
-                                    ),
-                                  ),
-                                ],
-                            onSelected: (value) {});
-                      },
-                      icon: const Icon(Icons.more_vert),
-                    ),
+                    PopupMenuButton(
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: ListTile(
+                            onTap: () {},
+                            leading: const Icon(Icons.web),
+                            title: const Text("Search in web"),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          child: ListTile(
+                            onTap: () {},
+                            leading: const Icon(Icons.wallpaper),
+                            title: const Text("Set as wallpaper"),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),

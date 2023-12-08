@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:wallify/GetPhotos/full_screen.dart';
 import 'package:wallify/Utility/shimmer_effect.dart';
 import 'package:wallify/controller/main_controller.dart';
+import 'package:wallify/vvew/download_image/downloaded_images.dart';
 import 'package:wallify/vvew/search_setting.dart';
 
 class DashBoard extends StatelessWidget {
@@ -222,7 +223,9 @@ class DrawerSection extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.download),
             title: const Text("Download Images"),
-            onTap: () {},
+            onTap: () {
+              Get.to(() => const DownloadedImages());
+            },
           ),
           ListTile(
             leading: const Icon(Icons.history),
