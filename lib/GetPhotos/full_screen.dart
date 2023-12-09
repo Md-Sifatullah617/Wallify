@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wallify/controller/main_controller.dart';
 import 'package:wallify/vvew/home/dashboard.dart';
 
@@ -56,7 +58,7 @@ class _ImageDetailsState extends State<ImageDetails> {
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(25)),
                     child: CachedNetworkImage(
-                      imageUrl: widget.imageDetails["src"]["original"],
+                      imageUrl: widget.imageDetails["src"]["medium"],
                       fit: BoxFit.cover,
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
@@ -105,21 +107,92 @@ class _ImageDetailsState extends State<ImageDetails> {
                     ),
                     PopupMenuButton(
                       itemBuilder: (context) => [
-                        PopupMenuItem(
+                        const PopupMenuItem(
+                          value: 0,
                           child: ListTile(
-                            onTap: () {},
-                            leading: const Icon(Icons.web),
-                            title: const Text("Search in web"),
+                            leading: Icon(Icons.web),
+                            title: Text("Search in web"),
                           ),
                         ),
-                        PopupMenuItem(
+                        const PopupMenuItem(
+                          value: 1,
                           child: ListTile(
-                            onTap: () {},
-                            leading: const Icon(Icons.wallpaper),
-                            title: const Text("Set as wallpaper"),
+                            leading: Icon(Icons.wallpaper),
+                            title: Text("Set as wallpaper"),
                           ),
                         ),
                       ],
+                      onSelected: (value) {
+                        switch (value) {
+                          case 0:
+                            //launch url
+                            launchUrl(Uri.parse(widget.imageDetails["url"]));
+                            print("url clicked: ${widget.imageDetails["url"]}");
+                            break;
+                          case 1:
+                            // Set as wallpaper first open alert dialog
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text("Set as wallpaper"),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          onTap: () {
+                                            controller.setWallpaper(
+                                                widget.imageDetails["src"]
+                                                    ["original"],
+                                                widget.imageDetails["id"]
+                                                    .toString(),
+                                                WallpaperManager.HOME_SCREEN);
+                                            Navigator.pop(context);
+                                          },
+                                          leading: const Icon(Icons.home),
+                                          title: const Text("Home screen"),
+                                        ),
+                                        ListTile(
+                                          onTap: () {
+                                            controller.setWallpaper(
+                                                widget.imageDetails["src"]
+                                                    ["original"],
+                                                widget.imageDetails["id"]
+                                                    .toString(),
+                                                WallpaperManager.LOCK_SCREEN);
+                                            Navigator.pop(context);
+                                          },
+                                          leading: const Icon(Icons.lock),
+                                          title: const Text("Lock screen"),
+                                        ),
+                                        ListTile(
+                                          onTap: () {
+                                            controller.setWallpaper(
+                                                widget.imageDetails["src"]
+                                                    ["original"],
+                                                widget.imageDetails["id"]
+                                                    .toString(),
+                                                WallpaperManager.BOTH_SCREEN);
+                                            Navigator.pop(context);
+                                          },
+                                          leading: const Icon(Icons.sync),
+                                          title: const Text("Both"),
+                                        ),
+                                      ],
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Cancel")),
+                                    ],
+                                  );
+                                });
+                            break;
+                        }
+                      },
                     )
                   ],
                 ),

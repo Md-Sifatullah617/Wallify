@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -152,9 +153,16 @@ class MainController extends GetxController {
           dir.createSync(recursive: true);
         }
 
-        await dio.download(url, "${dir.path}/$filename");
+        var filePath = "${dir.path}/$filename";
+        await dio.download(url, filePath);
         successToastMessage("Image downloaded successfully");
         print("Image downloaded successfully");
+
+        // Check if the file exists after the download
+        bool fileExists = await File(filePath).exists();
+        if (!fileExists) {
+          print("File does not exist after download");
+        }
       } else {
         // Handle the case when the user denies the permission
         print("Storage permission not granted");
@@ -184,7 +192,7 @@ class MainController extends GetxController {
       if (status.isGranted) {
         await downloadImage(url, filename);
         // Add a delay before checking if the file exists
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
         // After downloading the image, check again if the file exists
         if (await file.exists()) {
           // If the file now exists, share it
@@ -196,6 +204,37 @@ class MainController extends GetxController {
         // Handle the case when the user denies the permission
         print("Storage permission not granted");
       }
+    }
+  }
+
+  Future<void> setWallpaper(String url, String filename, int location) async {
+    var dir = await getApplicationDocumentsDirectory();
+    String newPath = '${dir.path}/Wallify'; // your app name
+    String filePath = path.join(newPath, '$filename.jpg');
+
+    File file = File(filePath);
+
+    try {
+      isLoading.value = true;
+      // Check if the file already exists
+      bool fileExists = await file.exists();
+
+      if (!fileExists) {
+        // If the file doesn't exist, download it
+        await downloadImage(url, filename);
+        print("Image downloaded successfully");
+      }
+
+      // Now, set the wallpaper regardless of whether it was downloaded or pre-existing
+      await WallpaperManager.setWallpaperFromFile(filePath, location)
+          .then((value) => {
+                successToastMessage("Wallpaper set successfully"),
+                isLoading.value = false,
+              });
+    } catch (e) {
+      print("Error setting wallpaper: $e");
+      errorToastMessage("Wallpaper setting failed");
+      isLoading.value = false;
     }
   }
 }
