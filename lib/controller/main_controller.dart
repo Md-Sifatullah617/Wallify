@@ -153,15 +153,17 @@ class MainController extends GetxController {
           dir.createSync(recursive: true);
         }
 
-        var filePath = "${dir.path}/$filename";
+        var filePath = "${dir.path}/$filename.jpg";
         await dio.download(url, filePath);
         successToastMessage("Image downloaded successfully");
         print("Image downloaded successfully");
 
         // Check if the file exists after the download
         bool fileExists = await File(filePath).exists();
+        print("File exists after download: $fileExists");
+
         if (!fileExists) {
-          print("File does not exist after download");
+          print("Error: File does not exist after download");
         }
       } else {
         // Handle the case when the user denies the permission
@@ -176,34 +178,37 @@ class MainController extends GetxController {
   Future<void> shareImage(String url, String filename) async {
     var dir = await getApplicationDocumentsDirectory();
     String newPath = '${dir.path}/Wallify'; // your app name
-    String filePath = path.join(
-        newPath, '$filename.jpg'); // assuming the image is in jpg format
+    String filePath = path.join(newPath, '$filename.jpg');
 
-    File file = File(filePath);
-    if (await file.exists()) {
-      // If the file exists, share it
-      await Share.shareFiles([filePath]);
-    } else {
-      // If the file doesn't exist, download it first
-      var status = await Permission.storage.status;
-      if (!status.isGranted) {
-        status = await Permission.storage.request();
-      }
-      if (status.isGranted) {
+    try {
+      // Check if the file already exists
+      bool fileExists = await File(filePath).exists();
+
+      if (!fileExists) {
+        // If the file doesn't exist, download it first
         await downloadImage(url, filename);
         // Add a delay before checking if the file exists
-        await Future.delayed(const Duration(seconds: 2));
-        // After downloading the image, check again if the file exists
-        if (await file.exists()) {
-          // If the file now exists, share it
-          await Share.shareFiles([filePath]);
-        } else {
-          print("File does not exist after download");
-        }
-      } else {
-        // Handle the case when the user denies the permission
-        print("Storage permission not granted");
+        await Future.delayed(Duration(seconds: 2));
       }
+
+      // After downloading the image, check if the file exists
+      fileExists = await File(filePath).exists();
+
+      if (fileExists) {
+        // If the file exists, share it
+        await Share.shareXFiles(
+          [
+            XFile(
+              filePath,
+              name: filename,
+            )
+          ],
+        );
+      } else {
+        print("File does not exist after download");
+      }
+    } catch (e) {
+      print("Error sharing image: $e");
     }
   }
 
