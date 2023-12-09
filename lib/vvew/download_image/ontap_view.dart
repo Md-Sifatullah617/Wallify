@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:wallify/Utility/utilities.dart';
 import 'package:wallify/controller/main_controller.dart';
 
@@ -18,24 +19,26 @@ class OnTapViewPage extends StatelessWidget {
           actions: [
             PopupMenuButton(itemBuilder: (context) {
               return [
-                PopupMenuItem(
+                const PopupMenuItem(
                   value: 0,
                   child: ListTile(
-                    leading: const Icon(Icons.share),
-                    title: const Text("Share"),
+                    leading: Icon(Icons.share),
+                    title: Text("Share"),
                   ),
                 ),
-                PopupMenuItem(
+                const PopupMenuItem(
                   value: 1,
                   child: ListTile(
-                    leading: const Icon(Icons.wallpaper),
-                    title: const Text("Set as wallpaper"),
+                    leading: Icon(Icons.wallpaper),
+                    title: Text("Set as wallpaper"),
                   ),
                 ),
               ];
             }, onSelected: (value) async {
               if (value == 0) {
-                // Share
+                // Share the image
+                await Share.shareXFiles([XFile(image.path)],
+                    text: "Wallify - Download HD wallpapers for free");
               } else if (value == 1) {
                 // Set as wallpaper
                 showDialog(
