@@ -5,6 +5,7 @@ import 'package:wallify/GetPhotos/full_screen.dart';
 import 'package:wallify/Utility/shimmer_effect.dart';
 import 'package:wallify/controller/main_controller.dart';
 import 'package:wallify/vvew/download_image/downloaded_images.dart';
+import 'package:wallify/vvew/history/show_history.dart';
 import 'package:wallify/vvew/search_setting.dart';
 
 class DashBoard extends StatelessWidget {
@@ -157,6 +158,7 @@ class DashBoard extends StatelessWidget {
               SizedBox(
                 height: Get.height * 0.4,
                 child: ListView.builder(
+                  reverse: true,
                   itemCount: controller.searchHistory.length,
                   itemBuilder: (context, index) => ListTile(
                     onTap: () {
@@ -176,6 +178,35 @@ class DashBoard extends StatelessWidget {
                     ),
                   ),
                 ),
+              ),
+              SizedBox(
+                height: Get.height * 0.05,
+              ),
+              // created by
+              Text(
+                "Created By",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(
+                height: Get.height * 0.02,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Md. Sifatullah",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => const SearchSettings());
+                    },
+                    child: const Icon(Icons.settings),
+                  ),
+                ],
               ),
             ],
           ),
@@ -230,7 +261,9 @@ class DrawerSection extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.history),
             title: const Text("Search Histories"),
-            onTap: () {},
+            onTap: () {
+              Get.to(() => const ShowHistories());
+            },
           ),
           ListTile(
             leading: const Icon(Icons.feedback),
@@ -241,6 +274,25 @@ class DrawerSection extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: const Text("Setting"),
             onTap: () {},
+          ),
+          SizedBox(
+            height: Get.height * 0.2,
+          ),
+          //created by
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: "Created By\n",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                TextSpan(
+                  text: "Md. Sifatullah",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
+            ),
           ),
         ],
       ),
