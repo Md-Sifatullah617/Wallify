@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wallify/Utility/secured_data.dart';
@@ -95,6 +95,12 @@ class MainController extends GetxController {
     }
   }
 
+  void removeFromSearchHistory(int index) {
+    searchHistory.removeAt(index);
+    SecureData.writeSecureData(key: "searchHistory", value: searchHistory);
+    update();
+  }
+
   Future searchPhotos(searchQuery, pageNo) async {
     try {
       isLoading.value = true;
@@ -142,11 +148,12 @@ class MainController extends GetxController {
         status = await Permission.storage.request();
       }
       if (status.isGranted) {
-        var dir = await getApplicationDocumentsDirectory();
+        var dirPath = await ExternalPath.getExternalStoragePublicDirectory(
+            ExternalPath.DIRECTORY_DOWNLOADS);
 
         // Create a new directory with your app name
-        String newPath = '${dir.path}/Wallify'; // your app name
-        dir = Directory(newPath);
+        String newPath = '$dirPath/Wallify'; // your app name
+        Directory dir = Directory(newPath);
         // Check if the directory exists
         bool exists = await dir.exists();
         if (!exists) {
@@ -165,9 +172,6 @@ class MainController extends GetxController {
         if (!fileExists) {
           print("Error: File does not exist after download");
         }
-      } else {
-        // Handle the case when the user denies the permission
-        print("Storage permission not granted");
       }
     } catch (e) {
       errorToastMessage("Image downloading failed");
@@ -176,8 +180,9 @@ class MainController extends GetxController {
   }
 
   Future<void> shareImage(String url, String filename) async {
-    var dir = await getApplicationDocumentsDirectory();
-    String newPath = '${dir.path}/Wallify'; // your app name
+    var dirPath = await ExternalPath.getExternalStoragePublicDirectory(
+        ExternalPath.DIRECTORY_DOWNLOADS);
+    String newPath = '$dirPath/Wallify'; // your app name
     String filePath = path.join(newPath, '$filename.jpg');
 
     try {
@@ -213,8 +218,9 @@ class MainController extends GetxController {
   }
 
   Future<void> setWallpaper(String url, String filename, int location) async {
-    var dir = await getApplicationDocumentsDirectory();
-    String newPath = '${dir.path}/Wallify'; // your app name
+    var dirPath = await ExternalPath.getExternalStoragePublicDirectory(
+        ExternalPath.DIRECTORY_DOWNLOADS);
+    String newPath = '$dirPath/Wallify'; // your app name
     String filePath = path.join(newPath, '$filename.jpg');
 
     File file = File(filePath);

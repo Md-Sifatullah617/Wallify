@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:external_path/external_path.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,18 @@ class _DownloadedImagesState extends State<DownloadedImages> {
   }
 
   Future<void> loadImages() async {
-    var dir = await getApplicationDocumentsDirectory();
-    String newPath = '${dir.path}/Wallify'; // your app name
+    var dirPath = await ExternalPath.getExternalStoragePublicDirectory(
+        ExternalPath.DIRECTORY_DOWNLOADS);
+    String newPath = '$dirPath/Wallify'; // your app name
     Directory imageDirectory = Directory(newPath);
+
+    // Check if the directory exists
+    bool exists = await imageDirectory.exists();
+    if (!exists) {
+      // If the directory does not exist, create it
+      imageDirectory.createSync(recursive: true);
+    }
+
     List<FileSystemEntity> imageFiles = imageDirectory.listSync();
     setState(() {
       _images = imageFiles.map((item) => File(item.path)).toList();

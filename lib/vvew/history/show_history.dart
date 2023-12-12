@@ -12,35 +12,38 @@ class ShowHistories extends StatelessWidget {
         title: const Text('History'),
       ),
       body: GetBuilder<MainController>(
-        builder: (controller) => Column(
-          children: [
-            controller.searchHistory.isEmpty
-                ? const Center(
-                    child: Text('No History'),
-                  )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    reverse: true,
-                    itemCount: controller.searchHistory.length,
-                    itemBuilder: (context, index) => ListTile(
-                      onTap: () {
-                        controller.searchController.text =
-                            controller.searchHistory[index];
-                      },
-                      leading: const Icon(Icons.history),
-                      title: Text(
-                        controller.searchHistory[index],
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      trailing: InkWell(
+        builder: (controller) => SingleChildScrollView(
+          child: Column(
+            children: [
+              controller.searchHistory.isEmpty
+                  ? const Center(
+                      child: Text('No History'),
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      reverse: true,
+                      itemCount: controller.searchHistory.length,
+                      itemBuilder: (context, index) => ListTile(
                         onTap: () {
-                          controller.searchHistory.removeAt(index);
+                          controller.searchController.text =
+                              controller.searchHistory[index];
                         },
-                        child: const Icon(Icons.cancel_presentation),
+                        leading: const Icon(Icons.history),
+                        title: Text(
+                          controller.searchHistory[index],
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        trailing: InkWell(
+                          onTap: () {
+                            controller.removeFromSearchHistory(index);
+                          },
+                          child: const Icon(Icons.cancel_presentation),
+                        ),
                       ),
                     ),
-                  ),
-          ],
+            ],
+          ),
         ),
       ),
     );

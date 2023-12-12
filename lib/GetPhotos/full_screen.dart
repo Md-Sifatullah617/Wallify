@@ -205,14 +205,14 @@ class _ImageDetailsState extends State<ImageDetails> {
                   ),
                   child: Text(
                     textAlign: TextAlign.center,
-                    "↓ Related Images ↓",
+                    "↓ Related Search ↓",
                     style: Theme.of(context).textTheme.titleLarge,
                   )),
               SizedBox(
                 height: Get.height * 0.05,
               ),
               GridView.builder(
-                // controller: controller.scrollController,
+                controller: controller.scrollController,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 padding: const EdgeInsets.only(top: 0),
@@ -226,8 +226,14 @@ class _ImageDetailsState extends State<ImageDetails> {
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
-                      // Get.to(() => ImageDetails(
-                      //     imageDetails: controller.photoList[index]));
+                      print('InkWell tapped');
+                      navigator!.push(
+                        MaterialPageRoute(
+                          builder: (context) => ImageDetails(
+                            imageDetails: controller.photoList[index],
+                          ),
+                        ),
+                      );
                     },
                     child: CachedNetworkImage(
                       imageUrl: controller.photoList[index]["src"]
