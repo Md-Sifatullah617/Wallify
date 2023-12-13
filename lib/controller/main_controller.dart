@@ -51,6 +51,7 @@ class MainController extends GetxController {
   ];
   var isLicenseSelected = false.obs;
   var selectedLicense = "".obs;
+  var isDownloading = false.obs;
 
   late ScrollController scrollController = ScrollController();
   double scrollPosition = 0.0;
@@ -152,8 +153,8 @@ class MainController extends GetxController {
             ExternalPath.DIRECTORY_DOWNLOADS);
 
         // Create a new directory with your app name
-        String newPath = '$dirPath/Wallify'; // your app name
-        Directory dir = Directory(newPath);
+        // String newPath = '$dirPath/Wallify'; // your app name
+        Directory dir = Directory(dirPath);
         // Check if the directory exists
         bool exists = await dir.exists();
         if (!exists) {
@@ -161,7 +162,9 @@ class MainController extends GetxController {
         }
 
         var filePath = "${dir.path}/$filename.jpg";
+        isDownloading.value = true;
         await dio.download(url, filePath);
+        isDownloading.value = false;
         successToastMessage("Image downloaded successfully");
         print("Image downloaded successfully");
 
@@ -182,8 +185,8 @@ class MainController extends GetxController {
   Future<void> shareImage(String url, String filename) async {
     var dirPath = await ExternalPath.getExternalStoragePublicDirectory(
         ExternalPath.DIRECTORY_DOWNLOADS);
-    String newPath = '$dirPath/Wallify'; // your app name
-    String filePath = path.join(newPath, '$filename.jpg');
+    // String newPath = '$dirPath/Wallify'; // your app name
+    String filePath = path.join(dirPath, '$filename.jpg');
 
     try {
       // Check if the file already exists
@@ -220,8 +223,8 @@ class MainController extends GetxController {
   Future<void> setWallpaper(String url, String filename, int location) async {
     var dirPath = await ExternalPath.getExternalStoragePublicDirectory(
         ExternalPath.DIRECTORY_DOWNLOADS);
-    String newPath = '$dirPath/Wallify'; // your app name
-    String filePath = path.join(newPath, '$filename.jpg');
+    // String newPath = '$dirPath/Wallify'; // your app name
+    String filePath = path.join(dirPath, '$filename.jpg');
 
     File file = File(filePath);
 

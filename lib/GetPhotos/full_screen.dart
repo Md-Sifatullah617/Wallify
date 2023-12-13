@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -51,20 +52,33 @@ class _ImageDetailsState extends State<ImageDetails> {
         builder: (controller) => SingleChildScrollView(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: AspectRatio(
-                  aspectRatio: 10 / 9,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(25)),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.imageDetails["src"]["medium"],
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
-                  ),
-                ),
+              Obx(
+                () {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(25.0),
+                        child: AspectRatio(
+                          aspectRatio: 10 / 9,
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(25)),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.imageDetails["src"]["medium"],
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (controller.isDownloading.value ||
+                          controller.isLoading.value)
+                        const CustomLoader(),
+                    ],
+                  );
+                },
               ),
               SizedBox(
                 height: Get.height * 0.02,
@@ -326,4 +340,25 @@ class _ImageDetailsState extends State<ImageDetails> {
   //         );
   //       });
   // }
+}
+
+class CustomLoader extends StatelessWidget {
+  const CustomLoader({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: Get.width * 0.2,
+      width: Get.width * 0.2,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: const SpinKitSpinningLines(
+        color: Colors.green,
+      ),
+    );
+  }
 }

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:external_path/external_path.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:wallify/vvew/download_image/ontap_view.dart';
 
@@ -24,8 +23,8 @@ class _DownloadedImagesState extends State<DownloadedImages> {
   Future<void> loadImages() async {
     var dirPath = await ExternalPath.getExternalStoragePublicDirectory(
         ExternalPath.DIRECTORY_DOWNLOADS);
-    String newPath = '$dirPath/Wallify'; // your app name
-    Directory imageDirectory = Directory(newPath);
+    // String newPath = '$dirPath/Wallify'; // your app name
+    Directory imageDirectory = Directory(dirPath);
 
     // Check if the directory exists
     bool exists = await imageDirectory.exists();
