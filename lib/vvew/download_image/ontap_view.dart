@@ -1,10 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:wallify/Utility/utilities.dart';
+import 'package:wallify/GetPhotos/full_screen.dart';
 import 'package:wallify/controller/main_controller.dart';
 
 class OnTapViewPage extends StatelessWidget {
@@ -14,8 +13,10 @@ class OnTapViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MainController>(
+      init: MainController(),
       builder: (controller) => Scaffold(
         appBar: AppBar(
+          title: Text(image.path.split("/").last),
           actions: [
             PopupMenuButton(itemBuilder: (context) {
               return [
@@ -51,13 +52,12 @@ class OnTapViewPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ListTile(
-                              onTap: () async {
-                                await WallpaperManager.setWallpaperFromFile(
-                                        image.path,
-                                        WallpaperManager.HOME_SCREEN)
-                                    .then(
-                                  (value) => successToastMessage(
-                                      "Wallpaper set successfully"),
+                              onTap: () {
+                                controller.setWallpaper(
+                                  image.path,
+                                  image.path.split("/").last,
+                                  WallpaperManager.HOME_SCREEN,
+                                  isDownloaded: true,
                                 );
                                 Navigator.pop(context);
                               },
@@ -65,13 +65,12 @@ class OnTapViewPage extends StatelessWidget {
                               title: const Text("Home screen"),
                             ),
                             ListTile(
-                              onTap: () async {
-                                await WallpaperManager.setWallpaperFromFile(
-                                        image.path,
-                                        WallpaperManager.LOCK_SCREEN)
-                                    .then(
-                                  (value) => successToastMessage(
-                                      "Wallpaper set successfully"),
+                              onTap: () {
+                                controller.setWallpaper(
+                                  image.path,
+                                  image.path.split("/").last,
+                                  WallpaperManager.LOCK_SCREEN,
+                                  isDownloaded: true,
                                 );
                                 Navigator.pop(context);
                               },
@@ -79,13 +78,12 @@ class OnTapViewPage extends StatelessWidget {
                               title: const Text("Lock screen"),
                             ),
                             ListTile(
-                              onTap: () async {
-                                await WallpaperManager.setWallpaperFromFile(
-                                        image.path,
-                                        WallpaperManager.BOTH_SCREEN)
-                                    .then(
-                                  (value) => successToastMessage(
-                                      "Wallpaper set successfully"),
+                              onTap: () {
+                                controller.setWallpaper(
+                                  image.path,
+                                  image.path.split("/").last,
+                                  WallpaperManager.BOTH_SCREEN,
+                                  isDownloaded: true,
                                 );
                                 Navigator.pop(context);
                               },
@@ -108,9 +106,17 @@ class OnTapViewPage extends StatelessWidget {
           ],
         ),
         body: Center(
-          child: Image.file(
-            image,
-            fit: BoxFit.cover,
+          child: Obx(
+            () => Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.file(
+                  image,
+                  fit: BoxFit.cover,
+                ),
+                if (controller.isLoading.value) const CustomLoader(),
+              ],
+            ),
           ),
         ),
       ),

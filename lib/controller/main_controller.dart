@@ -116,6 +116,7 @@ class MainController extends GetxController {
       var resultCode = response.statusCode;
       var resultBody = json.decode(response.body);
       if (resultCode == 200) {
+        photoList.clear();
         photoList.addAll(resultBody["photos"]);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // Jump to the saved scroll position
@@ -220,7 +221,8 @@ class MainController extends GetxController {
     }
   }
 
-  Future<void> setWallpaper(String url, String filename, int location) async {
+  Future<void> setWallpaper(String url, String filename, int location,
+      {bool? isDownloaded}) async {
     var dirPath = await ExternalPath.getExternalStoragePublicDirectory(
         ExternalPath.DIRECTORY_DOWNLOADS);
     // String newPath = '$dirPath/Wallify'; // your app name
@@ -234,9 +236,15 @@ class MainController extends GetxController {
       bool fileExists = await file.exists();
 
       if (!fileExists) {
-        // If the file doesn't exist, download it
-        await downloadImage(url, filename);
-        print("Image downloaded successfully");
+        if (isDownloaded == null || !isDownloaded) {
+          // If the file doesn't exist, download it
+          await downloadImage(url, filename);
+          print("Image downloaded successfully");
+        } else {
+          fileExists = true;
+          filePath = url;
+          file = File(filePath);
+        }
       }
 
       // Now, set the wallpaper regardless of whether it was downloaded or pre-existing
