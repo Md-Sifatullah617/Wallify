@@ -90,6 +90,7 @@ class _ImageDetailsState extends State<ImageDetails> {
         builder: (BuildContext context) {
           return Container(
             height: 150,
+            width: double.infinity,
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
