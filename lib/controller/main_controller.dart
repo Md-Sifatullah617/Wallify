@@ -107,17 +107,21 @@ class MainController extends GetxController {
       isLoading.value = true;
       update();
       var response = await http.get(
-          Uri.parse(
-              'https://api.pexels.com/v1/search?query=$searchQuery&per_page=80&page=$pageNo'),
-          headers: {
-            "Authorization":
-                "4iA5iM5oF1GhfQ117SF1QHw3trP4DxkuHrhci7amNepdFHzs9WEU6flc"
-          });
+        Uri.parse('https://www.googleapis.com/customsearch/v1?' +
+                'key=AIzaSyDDD68bHzSfThdcaP56YNY-dNW5jx6KhO8' + // Replace with your API key
+                // '&cx=25ff640fab372417e' + // Replace with your Search Engine ID
+                '&q=$searchQuery' +
+                '&start=$pageNo' +
+                '&num=10' + // Number of search results to return
+                '&searchType=image' // To search only for images
+            ),
+      );
+
       var resultCode = response.statusCode;
       var resultBody = json.decode(response.body);
       if (resultCode == 200) {
         photoList.clear();
-        photoList.addAll(resultBody["photos"]);
+        photoList.addAll(resultBody["items"]);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // Jump to the saved scroll position
           if (scrollController.hasClients) {
@@ -128,17 +132,16 @@ class MainController extends GetxController {
         print("PhotoList : $photoList");
         update();
       } else {
+        print('Status Code: $resultCode');
+        print('Response Body: $resultBody');
         errorToastMessage("Picture Loading Failed ! Try Again.");
         photoList.value = [];
         isLoading.value = false;
         update();
       }
     } catch (e) {
+      print('Exception: $e');
       errorToastMessage("Picture Loading Failed ! Try Again.");
-      print("Error : $e");
-      photoList.value = [];
-      isLoading.value = false;
-      update();
     }
   }
 

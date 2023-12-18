@@ -34,8 +34,8 @@ class DashBoard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  textAlign: TextAlign.center,
                   "ImageSeachMan",
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
                 SizedBox(
@@ -47,15 +47,22 @@ class DashBoard extends StatelessWidget {
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: TextField(
-                    controller: controller.searchController,
-                    decoration: const InputDecoration(
-                      hintText: "Search Images",
-                      border: InputBorder.none,
-                    ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: controller.searchController,
+                          decoration: const InputDecoration(
+                            hintText: "Search Images",
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 //button with custom width to search images
+
                 PrimaryBtn(
                     title: "Search",
                     width: Get.width * 0.3,
@@ -67,7 +74,7 @@ class DashBoard extends StatelessWidget {
                       controller.searchPhotos(
                           controller.searchController.text, 1);
                       //opens a bottom sheet to show search results
-                      customBottomSheet();
+                      customBottomSheet(context);
                     }),
                 SizedBox(
                   height: Get.height * 0.01,
@@ -92,7 +99,7 @@ class DashBoard extends StatelessWidget {
                         controller.update();
                         controller.searchPhotos(
                             controller.searchController.text, 1);
-                        customBottomSheet();
+                        customBottomSheet(context);
                       },
                       leading: const Icon(Icons.history),
                       title: Text(
