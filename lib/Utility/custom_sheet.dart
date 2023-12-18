@@ -9,6 +9,7 @@ import 'package:wallify/vvew/search_setting.dart';
 void customBottomSheet(context) {
   Get.bottomSheet(
     GetBuilder<MainController>(
+      init: MainController(),
       builder: (controller) => Container(
         height: Get.height,
         padding: EdgeInsets.symmetric(
@@ -62,7 +63,7 @@ void customBottomSheet(context) {
                                 imageDetails: controller.photoList[index]));
                           },
                           child: CachedNetworkImage(
-                            imageUrl: controller.photoList[index]["src"]["tiny"]
+                            imageUrl: controller.photoList[index]["thumbnail"]
                                 .toString(),
                             fit: BoxFit.cover,
                             errorWidget: (context, url, error) =>

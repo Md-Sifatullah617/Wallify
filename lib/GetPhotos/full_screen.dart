@@ -65,7 +65,7 @@ class _ImageDetailsState extends State<ImageDetails> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(25)),
                             child: CachedNetworkImage(
-                              imageUrl: widget.imageDetails["src"]["medium"],
+                              imageUrl: widget.imageDetails["original"],
                               fit: BoxFit.cover,
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
@@ -102,8 +102,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                         }
                         if (status.isGranted) {
                           controller.downloadImage(
-                              widget.imageDetails["src"]["original"],
-                              widget.imageDetails["id"].toString());
+                              widget.imageDetails["original"],
+                              widget.imageDetails["title"].toString());
                         } else {
                           // Handle the case when the user denies the permission
                           print("Storage permission not granted");
@@ -113,9 +113,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                     ),
                     IconButton(
                       onPressed: () {
-                        controller.shareImage(
-                            widget.imageDetails["src"]["original"],
-                            widget.imageDetails["id"].toString());
+                        controller.shareImage(widget.imageDetails["original"],
+                            widget.imageDetails["title"].toString());
                       },
                       icon: const Icon(Icons.share),
                     ),
@@ -140,8 +139,9 @@ class _ImageDetailsState extends State<ImageDetails> {
                         switch (value) {
                           case 0:
                             //launch url
-                            launchUrl(Uri.parse(widget.imageDetails["url"]));
-                            print("url clicked: ${widget.imageDetails["url"]}");
+                            launchUrl(Uri.parse(widget.imageDetails["link"]));
+                            print(
+                                "url clicked: ${widget.imageDetails["link"]}");
                             break;
                           case 1:
                             // Set as wallpaper first open alert dialog
@@ -157,9 +157,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                                         ListTile(
                                           onTap: () {
                                             controller.setWallpaper(
-                                                widget.imageDetails["src"]
-                                                    ["original"],
-                                                widget.imageDetails["id"]
+                                                widget.imageDetails["original"],
+                                                widget.imageDetails["title"]
                                                     .toString(),
                                                 WallpaperManager.HOME_SCREEN);
                                             Navigator.pop(context);
@@ -170,9 +169,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                                         ListTile(
                                           onTap: () {
                                             controller.setWallpaper(
-                                                widget.imageDetails["src"]
-                                                    ["original"],
-                                                widget.imageDetails["id"]
+                                                widget.imageDetails["original"],
+                                                widget.imageDetails["title"]
                                                     .toString(),
                                                 WallpaperManager.LOCK_SCREEN);
                                             Navigator.pop(context);
@@ -183,9 +181,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                                         ListTile(
                                           onTap: () {
                                             controller.setWallpaper(
-                                                widget.imageDetails["src"]
-                                                    ["original"],
-                                                widget.imageDetails["id"]
+                                                widget.imageDetails["original"],
+                                                widget.imageDetails["title"]
                                                     .toString(),
                                                 WallpaperManager.BOTH_SCREEN);
                                             Navigator.pop(context);
@@ -250,8 +247,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                       );
                     },
                     child: CachedNetworkImage(
-                      imageUrl: controller.photoList[index]["src"]
-                          ["tiny"], // Update this line
+                      imageUrl: controller.photoList[index]
+                          ["thumbnail"], // Update this line
                       fit: BoxFit.cover,
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
