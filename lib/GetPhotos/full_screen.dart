@@ -48,7 +48,6 @@ class _ImageDetailsState extends State<ImageDetails> {
       ),
       drawer: const DrawerSection(),
       body: GetBuilder<MainController>(
-        init: MainController(),
         builder: (controller) => SingleChildScrollView(
           child: Column(
             children: [

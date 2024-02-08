@@ -9,7 +9,6 @@ import 'package:wallify/vvew/search_setting.dart';
 void customBottomSheet(context) {
   Get.bottomSheet(
     GetBuilder<MainController>(
-      init: MainController(),
       builder: (controller) => Container(
         height: Get.height,
         padding: EdgeInsets.symmetric(
