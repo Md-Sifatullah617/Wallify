@@ -6,10 +6,11 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallify/controller/main_controller.dart';
+import 'package:wallify/model/search_photo_model.dart';
 import 'package:wallify/vvew/home/dashboard.dart';
 
 class ImageDetails extends StatefulWidget {
-  final Map imageDetails;
+  final Item imageDetails;
 
   const ImageDetails({
     super.key,
@@ -34,7 +35,7 @@ class _ImageDetailsState extends State<ImageDetails> {
           icon: const Icon(Icons.arrow_back),
         ),
         title: Text(
-          widget.imageDetails["id"].toString(),
+          widget.imageDetails.title!,
           style: Theme.of(context).textTheme.titleSmall,
         ),
         actions: [
@@ -64,7 +65,7 @@ class _ImageDetailsState extends State<ImageDetails> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(25)),
                             child: CachedNetworkImage(
-                              imageUrl: widget.imageDetails["original"],
+                              imageUrl: widget.imageDetails.link!,
                               fit: BoxFit.cover,
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
@@ -100,9 +101,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                           status = await Permission.storage.request();
                         }
                         if (status.isGranted) {
-                          controller.downloadImage(
-                              widget.imageDetails["original"],
-                              widget.imageDetails["title"].toString());
+                          controller.downloadImage(widget.imageDetails.link!,
+                              widget.imageDetails.title!);
                         } else {
                           // Handle the case when the user denies the permission
                           print("Storage permission not granted");
@@ -112,8 +112,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                     ),
                     IconButton(
                       onPressed: () {
-                        controller.shareImage(widget.imageDetails["original"],
-                            widget.imageDetails["title"].toString());
+                        controller.shareImage(widget.imageDetails.link!,
+                            widget.imageDetails.title!);
                       },
                       icon: const Icon(Icons.share),
                     ),
@@ -138,9 +138,10 @@ class _ImageDetailsState extends State<ImageDetails> {
                         switch (value) {
                           case 0:
                             //launch url
-                            launchUrl(Uri.parse(widget.imageDetails["link"]));
+                            launchUrl(Uri.parse(
+                                widget.imageDetails.image!.contextLink!));
                             print(
-                                "url clicked: ${widget.imageDetails["link"]}");
+                                "url clicked: ${widget.imageDetails.image!.contextLink!}");
                             break;
                           case 1:
                             // Set as wallpaper first open alert dialog
@@ -156,9 +157,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                                         ListTile(
                                           onTap: () {
                                             controller.setWallpaper(
-                                                widget.imageDetails["original"],
-                                                widget.imageDetails["title"]
-                                                    .toString(),
+                                                widget.imageDetails.link!,
+                                                widget.imageDetails.title!,
                                                 WallpaperManager.HOME_SCREEN);
                                             Navigator.pop(context);
                                           },
@@ -168,9 +168,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                                         ListTile(
                                           onTap: () {
                                             controller.setWallpaper(
-                                                widget.imageDetails["original"],
-                                                widget.imageDetails["title"]
-                                                    .toString(),
+                                                widget.imageDetails.link!,
+                                                widget.imageDetails.title!,
                                                 WallpaperManager.LOCK_SCREEN);
                                             Navigator.pop(context);
                                           },
@@ -180,9 +179,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                                         ListTile(
                                           onTap: () {
                                             controller.setWallpaper(
-                                                widget.imageDetails["original"],
-                                                widget.imageDetails["title"]
-                                                    .toString(),
+                                                widget.imageDetails.link!,
+                                                widget.imageDetails.title!,
                                                 WallpaperManager.BOTH_SCREEN);
                                             Navigator.pop(context);
                                           },
@@ -222,7 +220,7 @@ class _ImageDetailsState extends State<ImageDetails> {
                 height: Get.height * 0.05,
               ),
               GridView.builder(
-                controller: controller.scrollController,
+                // controller: controller.scrollController,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 padding: const EdgeInsets.only(top: 0),
@@ -232,7 +230,8 @@ class _ImageDetailsState extends State<ImageDetails> {
                   mainAxisSpacing: 2,
                   childAspectRatio: 2 / 3,
                 ),
-                itemCount: controller.photoList.length, // Update this line
+                itemCount:
+                    controller.photoList.items!.length, // Update this line
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
@@ -240,14 +239,14 @@ class _ImageDetailsState extends State<ImageDetails> {
                       navigator!.push(
                         MaterialPageRoute(
                           builder: (context) => ImageDetails(
-                            imageDetails: controller.photoList[index],
+                            imageDetails: controller.photoList.items![index],
                           ),
                         ),
                       );
                     },
                     child: CachedNetworkImage(
-                      imageUrl: controller.photoList[index]
-                          ["thumbnail"], // Update this line
+                      imageUrl: controller.photoList.items![index].image!
+                          .thumbnailLink!, // Update this line
                       fit: BoxFit.cover,
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),

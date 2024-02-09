@@ -11,13 +11,15 @@ import 'package:wallify/Utility/secured_data.dart';
 import 'package:wallify/Utility/utilities.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
+import 'package:wallify/model/search_photo_model.dart';
 
 class MainController extends GetxController {
   var searchController = TextEditingController();
   var isLoading = false.obs;
   var pageNo = 1.obs;
   var searchHistory = [].obs;
-  var photoList = [].obs;
+  late SearchImageDetailsModel photoList;
+  var searchImageList = <Item>[].obs;
   var downloadedImageList = [].obs;
   var typeList = [
     "Any Type",
@@ -53,8 +55,8 @@ class MainController extends GetxController {
   var selectedLicense = "".obs;
   var isDownloading = false.obs;
 
-  late ScrollController scrollController = ScrollController();
-  double scrollPosition = 0.0;
+  // late ScrollController scrollController = ScrollController();
+  // double scrollPosition = 0.0;
 
   @override
   void onInit() {
@@ -66,14 +68,14 @@ class MainController extends GetxController {
         print("value is null");
       }
     });
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        scrollPosition = scrollController.position.pixels;
-        pageNo.value++;
-        searchPhotos(searchController.text, pageNo.value);
-      }
-    });
+    // scrollController.addListener(() {
+    //   if (scrollController.position.pixels ==
+    //       scrollController.position.maxScrollExtent) {
+    //     scrollPosition = scrollController.position.pixels;
+    //     pageNo.value++;
+    //     searchPhotos(searchController.text, pageNo.value);
+    //   }
+    // });
     // Set the selectedType to the first item in the typeList
     selectedType.value = typeList[0];
     isTypeSelected.value = true;
@@ -102,41 +104,42 @@ class MainController extends GetxController {
     update();
   }
 
-  Future searchPhotos(searchQuery, pageNo) async {
+  Future searchPhotos() async {
     try {
       isLoading.value = true;
       update();
       var response = await http.get(
-          Uri.parse(
-              'https://api.pexels.com/v1/search?query=$searchQuery&per_page=80&page=$pageNo'),
-          headers: {
-            "Authorization":
-                "4iA5iM5oF1GhfQ117SF1QHw3trP4DxkuHrhci7amNepdFHzs9WEU6flc"
-          });
+        Uri.parse(
+            'https://www.googleapis.com/customsearch/v1?key=AIzaSyDux8mV3GTpz6xeUC6Ujp3uwUmSW6oxj3I&cx=25ff640fab372417e&q=${searchController.text}&start=${pageNo.value}&searchType=image' // To search only for images
+            ),
+      );
       var resultCode = response.statusCode;
-      var resultBody = json.decode(response.body);
       if (resultCode == 200) {
-        photoList.clear();
-        photoList.addAll(resultBody["photos"]);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          // Jump to the saved scroll position
-          if (scrollController.hasClients) {
-            scrollController.jumpTo(scrollPosition);
-          }
-        });
+        photoList = SearchImageDetailsModel.fromJson(jsonDecode(response.body));
+        searchImageList.addAll(photoList.items!);
+
+        // WidgetsBinding.instance.addPostFrameCallback((_) {
+        //   // Jump to the saved scroll position
+        //   if (scrollController.hasClients) {
+        //     scrollController.jumpTo(scrollPosition);
+        //   }
+        // });
         isLoading.value = false;
+        update();
         print("PhotoList : $photoList");
+        print("pageNo : ${pageNo.value}");
+        print("searchImageList : ${searchImageList.length}");
         update();
       } else {
         errorToastMessage("Picture Loading Failed ! Try Again.");
-        photoList.value = [];
+        // photoList.value = [];
         isLoading.value = false;
         update();
       }
     } catch (e) {
       errorToastMessage("Picture Loading Failed ! Try Again.");
       print("Error : $e");
-      photoList.value = [];
+      // photoList.value = [];
       isLoading.value = false;
       update();
     }

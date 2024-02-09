@@ -46,7 +46,7 @@ void customBottomSheet() {
               () => controller.isLoading.value
                   ? const ShimmerEffect()
                   : GridView.builder(
-                      controller: controller.scrollController,
+                      // controller: controller.scrollController,
                       padding: const EdgeInsets.only(top: 0),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -55,15 +55,18 @@ void customBottomSheet() {
                         mainAxisSpacing: 2,
                         childAspectRatio: 2 / 3,
                       ),
-                      itemCount: controller.photoList.length,
+                      itemCount: controller.searchImageList.length,
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
-                            Get.to(() => ImageDetails(
-                                imageDetails: controller.photoList[index]));
+                            Get.to(
+                              () => ImageDetails(
+                                  imageDetails:
+                                      controller.searchImageList[index]),
+                            );
                           },
                           child: CachedNetworkImage(
-                            imageUrl: controller.photoList[index]["thumbnail"]
+                            imageUrl: controller.searchImageList[index].link
                                 .toString(),
                             fit: BoxFit.cover,
                             errorWidget: (context, url, error) =>
@@ -72,6 +75,13 @@ void customBottomSheet() {
                         );
                       }),
             ),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              controller.pageNo.value++;
+              controller.searchPhotos();
+            },
+            child: const Icon(Icons.arrow_downward),
           ),
         ]),
       ),

@@ -62,12 +62,14 @@ class DashBoard extends StatelessWidget {
                     height: Get.height * 0.04,
                     btnColor: Colors.green,
                     onPressed: () {
+                      controller.pageNo.value = 1;
+                      controller.searchImageList.clear();
                       controller
                           .addToSearchHistory(controller.searchController.text);
-                      controller.searchPhotos(
-                          controller.searchController.text, 1);
+                      controller.searchPhotos();
                       //opens a bottom sheet to show search results
                       customBottomSheet();
+                      print("query : ${controller.searchController.text}");
                     }),
                 SizedBox(
                   height: Get.height * 0.01,
@@ -90,8 +92,7 @@ class DashBoard extends StatelessWidget {
                         controller.searchController.text =
                             controller.searchHistory[index];
                         controller.update();
-                        controller.searchPhotos(
-                            controller.searchController.text, 1);
+                        controller.searchPhotos();
                         customBottomSheet();
                       },
                       leading: const Icon(Icons.history),
