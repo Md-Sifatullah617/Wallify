@@ -6,9 +6,10 @@ import 'package:wallify/Utility/shimmer_effect.dart';
 import 'package:wallify/controller/main_controller.dart';
 import 'package:wallify/vvew/search_setting.dart';
 
-void customBottomSheet(context) {
+void customBottomSheet() {
   Get.bottomSheet(
     GetBuilder<MainController>(
+      init: MainController(),
       builder: (controller) => Container(
         height: Get.height,
         padding: EdgeInsets.symmetric(

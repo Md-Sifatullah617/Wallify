@@ -105,33 +105,19 @@ class MainController extends GetxController {
   Future searchPhotos(searchQuery, pageNo) async {
     try {
       isLoading.value = true;
-      //serpapi google search api
-      // var response = await http.get(
-      //   Uri.parse('https://serpapi.com/search.json'),
-      // );
-      Uri uri = Uri.parse('https://serpapi.com/search.json');
-
-      Map<String, String> parameters = {
-        "engine": "google",
-        "q": searchQuery,
-        // "location": "Seattle-Tacoma, WA, Washington, United States",
-        // "hl": "en",
-        // "gl": "us",
-        "google_domain": "google.com",
-        "tbm": "isch",
-        "start": "$pageNo",
-        "num": "100",
-        "api_key":
-            "a597773b11618586b328a2777c0f99632587c4181a49ea7a66cd4fe2f7077283",
-      };
-
-      var response = await http.get(uri.replace(queryParameters: parameters));
-
+      update();
+      var response = await http.get(
+          Uri.parse(
+              'https://api.pexels.com/v1/search?query=$searchQuery&per_page=80&page=$pageNo'),
+          headers: {
+            "Authorization":
+                "4iA5iM5oF1GhfQ117SF1QHw3trP4DxkuHrhci7amNepdFHzs9WEU6flc"
+          });
       var resultCode = response.statusCode;
       var resultBody = json.decode(response.body);
       if (resultCode == 200) {
         photoList.clear();
-        photoList.addAll(resultBody["images_results"]);
+        photoList.addAll(resultBody["photos"]);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // Jump to the saved scroll position
           if (scrollController.hasClients) {
@@ -142,18 +128,17 @@ class MainController extends GetxController {
         print("PhotoList : $photoList");
         update();
       } else {
-        print('Status Code: $resultCode');
-        print('Response Body: $resultBody');
         errorToastMessage("Picture Loading Failed ! Try Again.");
         photoList.value = [];
         isLoading.value = false;
         update();
       }
     } catch (e) {
-      isLoading.value = false;
-
-      print('Exception: $e');
       errorToastMessage("Picture Loading Failed ! Try Again.");
+      print("Error : $e");
+      photoList.value = [];
+      isLoading.value = false;
+      update();
     }
   }
 
